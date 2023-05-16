@@ -2,10 +2,10 @@
 import * as THREE from 'https://unpkg.com/three/build/three.module.js'
 
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.2, 50000)
-camera.position.z = 10
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.2, 10000000)
+camera.position.z = 5000
 
-const renderer = new THREE.WebGLRenderer()
+const renderer = new THREE.WebGLRenderer({antialias: true, pixelRatio: window.devicePixelRatio})
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 // #endregion
@@ -14,61 +14,123 @@ document.body.appendChild(renderer.domElement)
 // Distances in KM
 const data = {
   sun: {
+    name: 'Sun',
+    color: 0xFFA63A04,
     radius: 695508,
     distanceFromSun: 0
   },
   mercury: {
+    name: 'Mercury',
+    color: 0xFF797979,
     radius: 2440,
-    distanceFromSun: 57e6
+    distanceFromSun: 57e6,
+    
+    rotateDay: 88,
+    position: 0
   },
   venus: {
+    name: 'Venus',
+    color: 0xFFB06D20,
     radius: 6052,
-    distanceFromSun: 108e6
+    distanceFromSun: 108e6,
+    
+    rotateDay: 225,
+    reverse: true,
+    position: 0
   },
   earth: {
+    name: 'Earth',
+    color: 0xFF35364A,
     radius: 6371,
-    distanceFromSun:  150e6
+    distanceFromSun:  150e6,
+    
+    rotateDay: 365,
+    position: 0
   },
   mars: {
+    name: 'Mars',
+    color: 0xFF74301E,
     radius: 3390,
-    distanceFromSun: 228e6
+    distanceFromSun: 228e6,
+    
+    rotateDay: 687,
+    position: 0
   },
   jupiter: {
+    name: 'Jupiter',
+    color: 0xFF645C50,
     radius: 69911,
-    distanceFromSun: 779e6
+    distanceFromSun: 779e6,
+    
+    rotateDay: 4333,
+    position: 0
   },
   saturn: {
+    name: 'Saturn',
+    color: 0xFF8F8158,
     radius: 58232,
-    distanceFromSun: 1420e6
+    distanceFromSun: 1420e6,
+    
+    rotateDay: 10759,
+    position: 0,
+
+    ringMesh: undefined,
+    ringColor: 0xFFF8F9FA,
+    ringDistanceFromPlanet: 7000,
+    ringWidth: 25000
   },
   uranus: {
+    name: 'Uranus',
+    color: 0xFF579DC7,
     radius: 25362,
-    distanceFromSun: 2880e6
+    distanceFromSun: 2880e6,
+    
+    rotateDay: 30687,
+    reverse: true,
+    position: 0
   },
   neptune: {
+    name: 'Neptune',
+    color: 0xFF0179B4,
     radius: 24622,
-    distanceFromSun: 4500e6
+    distanceFromSun: 4500e6,
+    
+    rotateDay: 60190,
+    position: 0
   }
 }
 
-const radiusScale = 0.00001
-const distanceScale = 0.0000001
-// const distanceScale = radiusScale
+const radiusScale =   0.001
+const distanceScale = 0.0001
+const timeScale = 100000
 // #endregion
 
+// #region Planets
 for (let object of Object.keys(data)) {
   object = data[object]
-  let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 10, 10)
-  let material = new THREE.MeshBasicMaterial({color: 0xedcd68})
+  let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 50, 50)
+  let material = new THREE.MeshBasicMaterial({color: object.color})
   
   const obj = new THREE.Mesh(geometry, material)
   obj.position.x = object.distanceFromSun * distanceScale
   scene.add(obj)
+  object.mesh = obj
+
+  // Beatiful rings
+  if (object.name === 'Saturn') {
+    const geometry = new THREE.RingGeometry(object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale, object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale + object.ringWidth * radiusScale, 30)
+    const material = new THREE.MeshBasicMaterial({color: object.ringColor, side: THREE.DoubleSide})
+    const mesh = new THREE.Mesh(geometry, material)
+    scene.add(mesh)
+    mesh.rotation.x = 0.4 * Math.PI
+    mesh.rotation.y = 0.15 * Math.PI
+    object.ringMesh = mesh
+  }
 
   // Orbit line
-  material = new THREE.LineBasicMaterial({color: 0xffffff})
+  material = new THREE.LineBasicMaterial({color: 0xffffff, opacity: 0.04, transparent: true})
 
-  let sections = 100
+  let sections = 1000
   let points = []
 
   for (let i = 0; i < sections; i++) {
@@ -84,14 +146,15 @@ for (let object of Object.keys(data)) {
   const line = new THREE.Line(geometry, material)
   scene.add(line)
 }
+// #endregion
 
-// #region Movement
+// #region Camera Movement
 // Radians to degrees
 const rtg = ang => Math.floor(ang * 180 / Math.PI) % 360
 
 let holding = false
 let faster = false
-let fastMod = 10
+let fastMod = 100
 let [mouseLastX, mouseLastY] = [0, 0]
 
 document.addEventListener('wheel', e => {
@@ -103,52 +166,48 @@ document.addEventListener('wheel', e => {
   camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
 })
 document.addEventListener('keydown', e => {
-  if (['a', 'd'].includes(e.key)) {
+  const key = e.key.toLowerCase()
+  if (['a', 'd'].includes(key)) {
     let speed = 1 * (faster ? fastMod : 1)
-    if (e.key === 'a') speed *= -1
+    if (key === 'a') speed *= -1
     
     camera.position.x += Math.cos(camera.rotation.y) * speed
     camera.position.z += Math.sin(camera.rotation.y) * -speed
   }
 
-  else if (['w', 's'].includes(e.key)) {
+  else if (['w', 's'].includes(key)) {
     let speed = 1 * (faster ? fastMod : 1)
-    if (e.key === 'w') speed *= -1
+    if (key === 'w') speed *= -1
       
     camera.position.x += Math.sin(camera.rotation.y) * speed
     camera.position.y += Math.sin(camera.rotation.x) * -speed
     camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
   }
 
-  else if (['q', 'e'].includes(e.key)) {
+  else if (['q', 'e'].includes(key)) {
     let speed = 1 * (faster ? fastMod : 1)
-    if (e.key === 'q') speed *= -1
+    if (key === 'q') speed *= -1
       
     camera.position.y += speed
   }
 
-  else if (e.key === 'r') {
+  else if (key === 'r') {
     camera.rotation.x = 0
     camera.rotation.y = 0
   }
-  else if (e.key === '0') {
-    camera.position.x = 0
-    camera.position.y = 0
-    camera.position.z = 10
-  }
-  switch (e.key) {
-    case "ArrowDown":
+  switch (key) {
+    case "arrowdown":
       camera.rotation.x -= 0.5 * Math.PI
       camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
       break
-    case "ArrowUp":
+    case "arrowup":
       camera.rotation.x += 0.5 * Math.PI
       camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
       break
-    case "ArrowLeft":
+    case "arrowleft":
       camera.rotation.y += 0.5 * Math.PI
       break
-    case "ArrowRight":
+    case "arrowright":
       camera.rotation.y -= 0.5 * Math.PI
       break
   }
@@ -157,6 +216,18 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keypress', e => {
   if (e.key === 'f') {
     faster = !faster
+  }
+
+  if (!isNaN(Number(e.key))) {
+    const index = Number(e.key)
+    const planetName = Object.keys(data)[index]
+    if (planetName) {
+      const planet = data[planetName]
+      camera.position.x = planet.mesh.position.x
+      camera.position.y = planet.mesh.position.y
+      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale / 2 + 1000
+      camera.lookAt(planet.mesh.position.x, planet.mesh.position.y, planet.mesh.position.z)
+    }
   }
 })
 
@@ -186,15 +257,35 @@ document.addEventListener('mousemove', e => {
 })
 // #endregion
 
+// #region Planet Movement
+function movePlanets() {
+  for (let object of Object.keys(data)) {
+    const planet = data[object]
+    if (!planet.rotateDay) continue
+    planet.position += (2 * Math.PI / planet.rotateDay / 24 / 60 / 60 / 60) * timeScale * (planet.reverse ? -1 : 1)
+    planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
+    planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
+    
+    if (planet.name === 'Saturn') {
+      planet.ringMesh.position.x = planet.mesh.position.x
+      planet.ringMesh.position.y = planet.mesh.position.y
+      planet.ringMesh.position.z = planet.mesh.position.z
+    }
+  }
+  console.log(data.saturn.ringMesh.x)
+}
+// #endregion
+
 // #region Render
 function animate() {
 	requestAnimationFrame(animate)
+  movePlanets()
 	renderer.render(scene, camera)
 
   // GUI
   document.querySelector('.coord').innerHTML = `
   Position: (${Math.floor(camera.position.x)}, ${Math.floor(camera.position.y)}, ${Math.floor(camera.position.z)}) <br>
-  Rotation: (${rtg(camera.rotation.x)}, ${rtg(camera.rotation.y)}, ${rtg(camera.rotation.z)})
+  Rotation: (${rtg(camera.rotation.x)}, ${rtg(camera.rotation.y)})
   `
 }
 animate()
