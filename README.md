@@ -14,3 +14,7 @@
 - Fix rotation movement to make poles stay being poles
 - Make arrows move camera 90deg
 - Add planet names
+
+##
+
+Textures from [Solar Textures](https://www.solarsystemscope.com/textures/)
