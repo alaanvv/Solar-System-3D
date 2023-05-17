@@ -9,6 +9,10 @@ camera.position.z = 5000
 const renderer = new THREE.WebGLRenderer({ antialias: true, pixelRatio: window.devicePixelRatio })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+
+let fps = 0
+let frameCount = 0
+let lastTime = performance.now()
 // #endregion
 
 // #region Data
@@ -49,8 +53,8 @@ const data = {
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth.png',
 
     translateDays: 365,
-    rotateDays: 0.1,
-    position: Math.PI / 2
+    rotateDays: 1,
+    position: 0
   },
   mars: {
     name: 'Mars',
@@ -114,7 +118,16 @@ const data = {
 
 const radiusScale = 0.001
 const distanceScale = 0.0001
-const timeScale = 10000
+const timeScale = 10000000
+// #endregion
+
+// #region Sky
+const texture = textureLoader.load('https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/stars.png')
+let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * distanceScale * 1.5, 15, 15)
+let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
+
+const obj = new THREE.Mesh(geometry, material)
+scene.add(obj)
 // #endregion
 
 // #region Planets
@@ -142,7 +155,7 @@ for (let object of Object.keys(data)) {
   }
 
   // Orbit line
-  material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.04, transparent: true })
+  material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true })
 
   let sections = 1000
   let points = []
@@ -250,7 +263,7 @@ document.addEventListener('keypress', e => {
       const planet = data[planetName]
       camera.position.x = planet.mesh.position.x
       camera.position.y = planet.mesh.position.y
-      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale / 2 + 100
+      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale * 3
       camera.lookAt(planet.mesh.position.x, planet.mesh.position.y, planet.mesh.position.z)
     }
   }
@@ -291,8 +304,8 @@ function movePlanets() {
     planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
     planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
 
-    planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
-    planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
+    // planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI * planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
+    // planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
     planet.mesh.rotation.z = planet.position
 
     if (planet.name === 'Saturn') {
@@ -309,7 +322,22 @@ function animate() {
   requestAnimationFrame(animate)
   movePlanets()
   moveBasedOnKeys()
+  // Uncomment to follow the earth
+  // const planet = data.earth
+  // camera.position.x = planet.mesh.position.x
+  // camera.position.y = planet.mesh.position.y
+  // camera.position.z = planet.mesh.position.z + planet.radius * radiusScale * 3
   renderer.render(scene, camera)
+  // FPS
+  const currentTime = performance.now()
+  const elapsedTime = currentTime - lastTime
+  frameCount++
+  if (elapsedTime >= 1000) {
+    // Update FPS every second
+    fps = Math.round(frameCount / (elapsedTime / 1000))
+    frameCount = 0
+    lastTime = currentTime
+  }
   // GUI
   document.querySelector('.coord').innerHTML = `
   Position: (${Math.floor(camera.position.x)}, ${Math.floor(camera.position.y)}, ${Math.floor(camera.position.z)}) <br>
