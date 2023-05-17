@@ -117,8 +117,8 @@ const data = {
 }
 
 const radiusScale = 0.001
-const distanceScale = 0.0001
-const timeScale = 10000000
+const distanceScale = 0.001
+const timeScale = 1
 // #endregion
 
 // #region Sky
@@ -135,13 +135,41 @@ for (let object of Object.keys(data)) {
   object = data[object]
   const texture = textureLoader.load(object.texture)
   let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 50, 50)
-  let material = new THREE.MeshBasicMaterial({ map: texture })
+  let material = object.name === 'Sun'
+    ? new THREE.MeshBasicMaterial({ map: texture })
+    : new THREE.MeshStandardMaterial({ map: texture })
 
   const obj = new THREE.Mesh(geometry, material)
   obj.position.x = object.distanceFromSun * distanceScale
   scene.add(obj)
   object.mesh = obj
 
+  // Sun light
+  if (object.name === 'Sun') {
+    // Add point lights
+    const parts = 8
+    const partSize = 2 * Math.PI / parts
+
+    // idk why but multiplin by 100 makes it work
+    // X and Y
+    for (let i = 0; i < parts; i++) {
+      let light = new THREE.PointLight(0xffffff, 0.1)
+      obj.add(light)
+
+      const angle = partSize * i
+      light.position.x = Math.sin(angle) * object.radius * distanceScale * 100
+      light.position.y = Math.cos(angle) * object.radius * distanceScale * 100
+    }
+    // X and Z
+    for (let i = 0; i < parts; i++) {
+      let light = new THREE.PointLight(0xffffff, 0.1)
+      obj.add(light)
+
+      const angle = partSize * i
+      light.position.x = Math.cos(angle) * object.radius * distanceScale * 100
+      light.position.z = Math.sin(angle) * object.radius * distanceScale * 100
+    }
+  }
   // Beatiful rings
   if (object.name === 'Saturn') {
     const geometry = new THREE.RingGeometry(object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale, object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale + object.ringWidth * radiusScale, 30)
@@ -223,7 +251,7 @@ function moveBasedOnKeys() {
 
 document.addEventListener('keydown', e => {
   if (!pressedKeys.includes(e.key.toLowerCase())) pressedKeys.push(e.key.toLowerCase())
-  
+
   switch (e.key.toLowerCase()) {
     case "arrowdown":
       camera.rotation.x -= 0.5 * Math.PI
@@ -304,6 +332,7 @@ function movePlanets() {
     planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
     planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
 
+    // Fix
     // planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI * planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
     // planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
     planet.mesh.rotation.z = planet.position
