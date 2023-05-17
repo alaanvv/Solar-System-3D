@@ -6,7 +6,7 @@ const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.2, 10000000)
 camera.position.z = 5000
 
-const renderer = new THREE.WebGLRenderer({antialias: true, pixelRatio: window.devicePixelRatio})
+const renderer = new THREE.WebGLRenderer({ antialias: true, pixelRatio: window.devicePixelRatio })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 // #endregion
@@ -16,74 +16,74 @@ document.body.appendChild(renderer.domElement)
 const data = {
   sun: {
     name: 'Sun',
-    color: 0xFFA63A04,
     radius: 695508,
     distanceFromSun: 0,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/sun.png',
   },
   mercury: {
     name: 'Mercury',
-    color: 0xFF797979,
     radius: 2440,
     distanceFromSun: 57e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 88,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mercury.png',
+
+    translateDays: 88,
+    rotateDays: 58.6,
     position: 0
   },
   venus: {
     name: 'Venus',
-    color: 0xFFB06D20,
     radius: 6052,
     distanceFromSun: 108e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 225,
-    reverse: true,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/venus.png',
+
+    translateDays: 225,
+    rotateDays: 243,
+    rotateReverse: true,
+    translateReverse: true,
     position: 0
   },
   earth: {
     name: 'Earth',
-    color: 0xFF35364A,
     radius: 6371,
-    distanceFromSun:  150e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 365,
+    distanceFromSun: 150e6,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth.png',
+
+    translateDays: 365,
+    rotateDays: 1,
     position: 0
   },
   mars: {
     name: 'Mars',
-    color: 0xFF74301E,
     radius: 3390,
     distanceFromSun: 228e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 687,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mars.png',
+
+    translateDays: 687,
+    rotateDays: 1.03,
     position: 0
   },
   jupiter: {
     name: 'Jupiter',
-    color: 0xFF645C50,
     radius: 69911,
     distanceFromSun: 779e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 4333,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/jupiter.png',
+
+    translateDays: 4333,
+    rotateDays: 0.41,
     position: 0
   },
   saturn: {
     name: 'Saturn',
-    color: 0xFF8F8158,
     radius: 58232,
     distanceFromSun: 1420e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 10759,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn.png',
+
+    translateDays: 10759,
+    rotateDays: 0.44,
     position: 0,
 
     ringMesh: undefined,
-    ringColor: 0xFFF8F9FA,
+    ringTexture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn-ring.png',
     ringDistanceFromPlanet: 7000,
     ringWidth: 25000
   },
@@ -92,10 +92,11 @@ const data = {
     color: 0xFF579DC7,
     radius: 25362,
     distanceFromSun: 2880e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 30687,
-    reverse: true,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/uranus.png',
+
+    translateDays: 30687,
+    rotateDays: 0.72,
+    translateReverse: true,
     position: 0
   },
   neptune: {
@@ -103,60 +104,61 @@ const data = {
     color: 0xFF0179B4,
     radius: 24622,
     distanceFromSun: 4500e6,
-    texture: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.turbosquid.com%2FPreview%2F001203%2F681%2FZB%2FZ.jpg&f=1&nofb=1&ipt=9029fdb7c9e0ea1dcc60b2e560f88371f145664c1102f6605af43ed870a82b2e&ipo=images',
-    
-    rotateDay: 60190,
+    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/neptune.png',
+
+    translateDays: 60190,
+    rotateDays: 0.67,
     position: 0
   }
 }
 
-const radiusScale =   0.001
+const radiusScale = 0.001
 const distanceScale = 0.0001
-const timeScale = 10000000
+const timeScale = 10000
 // #endregion
 
 // #region Planets
 for (let object of Object.keys(data)) {
-  textureLoader.load(data[object].texture, texture => {
-    object = data[object]
-    let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 50, 50)
-    let material = new THREE.MeshBasicMaterial({map: texture}) //({color: object.color})
-    
-    const obj = new THREE.Mesh(geometry, material)
-    obj.position.x = object.distanceFromSun * distanceScale
-    scene.add(obj)
-    object.mesh = obj
+  object = data[object]
+  const texture = textureLoader.load(object.texture)
+  let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 50, 50)
+  let material = new THREE.MeshBasicMaterial({ map: texture })
 
-    // Beatiful rings
-    if (object.name === 'Saturn') {
-      const geometry = new THREE.RingGeometry(object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale, object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale + object.ringWidth * radiusScale, 30)
-      const material = new THREE.MeshBasicMaterial({color: object.ringColor, side: THREE.DoubleSide})
-      const mesh = new THREE.Mesh(geometry, material)
-      scene.add(mesh)
-      mesh.rotation.x = 0.4 * Math.PI
-      mesh.rotation.y = 0.15 * Math.PI
-      object.ringMesh = mesh
-    }
+  const obj = new THREE.Mesh(geometry, material)
+  obj.position.x = object.distanceFromSun * distanceScale
+  scene.add(obj)
+  object.mesh = obj
 
-    // Orbit line
-    material = new THREE.LineBasicMaterial({color: 0xffffff, opacity: 0.04, transparent: true})
+  // Beatiful rings
+  if (object.name === 'Saturn') {
+    const geometry = new THREE.RingGeometry(object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale, object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale + object.ringWidth * radiusScale, 30)
+    const texture = textureLoader.load(data.saturn.ringTexture)
+    const material = new THREE.MeshBasicMaterial({ map: texture, color: object.ringColor, side: THREE.DoubleSide })
+    const mesh = new THREE.Mesh(geometry, material)
+    scene.add(mesh)
+    mesh.rotation.x = 0.4 * Math.PI
+    mesh.rotation.y = 0.15 * Math.PI
+    object.ringMesh = mesh
+  }
 
-    let sections = 1000
-    let points = []
+  // Orbit line
+  material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.04, transparent: true })
 
-    for (let i = 0; i < sections; i++) {
-      let angle = (2 * Math.PI) / sections * i
-      let x = Math.cos(angle) * object.distanceFromSun * distanceScale
-      let y = Math.sin(angle) * object.distanceFromSun * distanceScale
-      points.push(new THREE.Vector3(x, y, 0))
-    }
-    points.push(points[0])
+  let sections = 1000
+  let points = []
 
-    geometry = new THREE.BufferGeometry().setFromPoints(points)
-    
-    const line = new THREE.Line(geometry, material)
-    scene.add(line)
-  })
+  for (let i = 0; i < sections; i++) {
+    let angle = (2 * Math.PI) / sections * i
+    let x = Math.cos(angle) * object.distanceFromSun * distanceScale
+    let y = Math.sin(angle) * object.distanceFromSun * distanceScale
+    points.push(new THREE.Vector3(x, y, 0))
+  }
+  points.push(points[0])
+
+  geometry = new THREE.BufferGeometry().setFromPoints(points)
+
+  const line = new THREE.Line(geometry, material)
+  scene.add(line)
 }
 // #endregion
 
@@ -173,7 +175,7 @@ let [mouseLastX, mouseLastY] = [0, 0]
 document.addEventListener('wheel', e => {
   let speed = 15 * (faster ? fastMod : 1)
   if (e.deltaY <= 0) speed *= -1
-  
+
   camera.position.x += Math.sin(camera.rotation.y) * speed
   camera.position.y += Math.sin(camera.rotation.x) * -speed
   camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
@@ -183,24 +185,24 @@ function moveBasedOnKeys() {
     if (['a', 'd'].includes(key)) {
       let speed = 1 * (faster ? fastMod : 1)
       if (key === 'a') speed *= -1
-      
+
       camera.position.x += Math.cos(camera.rotation.y) * speed
       camera.position.z += Math.sin(camera.rotation.y) * -speed
     }
-  
+
     else if (['w', 's'].includes(key)) {
       let speed = 1 * (faster ? fastMod : 1)
       if (key === 'w') speed *= -1
-        
+
       camera.position.x += Math.sin(camera.rotation.y) * speed
       camera.position.y += Math.sin(camera.rotation.x) * -speed
       camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
     }
-  
+
     else if (['q', 'e'].includes(key)) {
       let speed = 1 * (faster ? fastMod : 1)
       if (key === 'q') speed *= -1
-        
+
       camera.position.y += speed
     }
   }
@@ -234,7 +236,7 @@ document.addEventListener('keypress', e => {
       camera.position.z = planet.mesh.position.z + planet.radius * radiusScale / 2 + 1000
       camera.lookAt(planet.mesh.position.x, planet.mesh.position.y, planet.mesh.position.z)
     }
-  }  
+  }
 
   switch (key) {
     case "arrowdown":
@@ -284,11 +286,15 @@ document.addEventListener('mousemove', e => {
 function movePlanets() {
   for (let object of Object.keys(data)) {
     const planet = data[object]
-    if (!planet.rotateDay) continue
-    planet.position += (2 * Math.PI / planet.rotateDay / 24 / 60 / 60 / 60) * timeScale * (planet.reverse ? -1 : 1)
+    if (!planet.translateDays) continue
+    planet.position += (2 * Math.PI / planet.translateDays / 24 / 60 / 60 / 60) * timeScale * (planet.translateReverse ? -1 : 1)
     planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
     planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
-    
+
+    planet.mesh.rotation.y += Math.cos(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
+    planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
+    planet.mesh.rotation.z = planet.position
+
     if (planet.name === 'Saturn') {
       planet.ringMesh.position.x = planet.mesh.position.x
       planet.ringMesh.position.y = planet.mesh.position.y
@@ -300,10 +306,10 @@ function movePlanets() {
 
 // #region Render
 function animate() {
-	requestAnimationFrame(animate)
+  requestAnimationFrame(animate)
   movePlanets()
   moveBasedOnKeys()
-	renderer.render(scene, camera)
+  renderer.render(scene, camera)
   // GUI
   document.querySelector('.coord').innerHTML = `
   Position: (${Math.floor(camera.position.x)}, ${Math.floor(camera.position.y)}, ${Math.floor(camera.position.z)}) <br>
