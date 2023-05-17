@@ -1,10 +1,16 @@
-# Solar-System-3D
+## Your PC isn't good enough to NASA Solar System?
+[Try this!](https://alaanvv.github.io/Solar-System-3D/)
 
-Actually we have a beauty yellow ball  
-  
-No, it's not Outer Wilds
+### Controls
 
-Yes, now the rotation of the earth makes the poles go near to the sun, so we can donate all those ice to Africa and Nordeste
-<img src="https://raw.githubusercontent.com/alaanvv/Image-Database/main/Solar-System-3D/logo.png">
-
-dont ask me about saturn rings
+ - `W, A, S, D, Scroll` - Move
+ - `0, 1, 2, ..., 8` - Sun to Neptune
+ - `R` - Reset your camera direction
+ - `F` - Enable/Disable going faster
+ 
+ ### Todo
+ 
+- Fix saturn ring texture
+- Fix rotation movement to make poles stay being poles
+- Make arrows move camera 90deg
+- Add planet names
