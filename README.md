@@ -4,6 +4,7 @@
 ### Controls
 
  - `W, A, S, D, Scroll` - Move
+ - `Q, E` - Move down and up
  - `0, 1, 2, ..., 8` - Sun to Neptune
  - `R` - Reset your camera direction
  - `F` - Enable/Disable going faster
