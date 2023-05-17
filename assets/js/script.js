@@ -49,8 +49,8 @@ const data = {
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth.png',
 
     translateDays: 365,
-    rotateDays: 1,
-    position: 0
+    rotateDays: 0.1,
+    position: Math.PI / 2
   },
   mars: {
     name: 'Mars',
@@ -210,6 +210,23 @@ function moveBasedOnKeys() {
 
 document.addEventListener('keydown', e => {
   if (!pressedKeys.includes(e.key.toLowerCase())) pressedKeys.push(e.key.toLowerCase())
+  
+  switch (e.key.toLowerCase()) {
+    case "arrowdown":
+      camera.rotation.x -= 0.5 * Math.PI
+      camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
+      break
+    case "arrowup":
+      camera.rotation.x += 0.5 * Math.PI
+      camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
+      break
+    case "arrowleft":
+      camera.rotation.y += 0.5 * Math.PI
+      break
+    case "arrowright":
+      camera.rotation.y -= 0.5 * Math.PI
+      break
+  }
 })
 document.addEventListener('keyup', e => {
   pressedKeys.splice(pressedKeys.indexOf(e.key.toLowerCase()), 1)
@@ -233,26 +250,9 @@ document.addEventListener('keypress', e => {
       const planet = data[planetName]
       camera.position.x = planet.mesh.position.x
       camera.position.y = planet.mesh.position.y
-      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale / 2 + 1000
+      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale / 2 + 100
       camera.lookAt(planet.mesh.position.x, planet.mesh.position.y, planet.mesh.position.z)
     }
-  }
-
-  switch (key) {
-    case "arrowdown":
-      camera.rotation.x -= 0.5 * Math.PI
-      camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
-      break
-    case "arrowup":
-      camera.rotation.x += 0.5 * Math.PI
-      camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
-      break
-    case "arrowleft":
-      camera.rotation.y += 0.5 * Math.PI
-      break
-    case "arrowright":
-      camera.rotation.y -= 0.5 * Math.PI
-      break
   }
 })
 
@@ -291,7 +291,7 @@ function movePlanets() {
     planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
     planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
 
-    planet.mesh.rotation.y += Math.cos(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
+    planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
     planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / 60) * timeScale * (planet.rotateReverse ? -1 : 1)
     planet.mesh.rotation.z = planet.position
 
