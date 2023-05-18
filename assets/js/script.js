@@ -32,13 +32,13 @@ const data = {
     name: 'Sun',
     radius: 695508 * radiusScale,
     distanceFromSun: 0 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/sun.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/sun${PSX ? '-psx' : ''}.png`,
   },
   mercury: {
     name: 'Mercury',
     radius: 2440 * radiusScale,
     distanceFromSun: 57e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mercury.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mercury${PSX ? '-psx' : ''}.png`,
 
     translateDays: 88 * timeScale,
     rotateDays: 58.6 * timeScale,
@@ -48,7 +48,7 @@ const data = {
     name: 'Venus',
     radius: 6052 * radiusScale,
     distanceFromSun: 108e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/venus.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/venus${PSX ? '-psx' : ''}.png`,
 
     translateDays: 225 * timeScale,
     rotateDays: 243 * timeScale,
@@ -60,7 +60,7 @@ const data = {
     name: 'Earth',
     radius: 6371 * radiusScale,
     distanceFromSun: 150e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth${PSX ? '-psx' : ''}.png`,
 
     translateDays: 365 * timeScale,
     rotateDays: 1 * timeScale,
@@ -70,7 +70,7 @@ const data = {
     name: 'Mars',
     radius: 3390 * radiusScale,
     distanceFromSun: 228e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mars.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mars${PSX ? '-psx' : ''}.png`,
 
     translateDays: 687 * timeScale,
     rotateDays: 1.03 * timeScale,
@@ -80,7 +80,7 @@ const data = {
     name: 'Jupiter',
     radius: 69911 * radiusScale,
     distanceFromSun: 779e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/jupiter.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/jupiter${PSX ? '-psx' : ''}.png`,
 
     translateDays: 4333 * timeScale,
     rotateDays: 0.41 * timeScale,
@@ -90,7 +90,7 @@ const data = {
     name: 'Saturn',
     radius: 58232 * radiusScale,
     distanceFromSun: 1420e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn${PSX ? '-psx' : ''}.png`,
 
     translateDays: 10759 * timeScale,
     rotateDays: 0.44 * timeScale,
@@ -105,7 +105,7 @@ const data = {
     color: 0xFF579DC7,
     radius: 25362 * radiusScale,
     distanceFromSun: 2880e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/uranus.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/uranus${PSX ? '-psx' : ''}.png`,
 
     translateDays: 30687 * timeScale,
     rotateDays: 0.72 * timeScale,
@@ -117,7 +117,7 @@ const data = {
     color: 0xFF0179B4,
     radius: 24622 * radiusScale,
     distanceFromSun: 4500e6 * distanceScale,
-    texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/neptune.png',
+    texture: `https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/neptune${PSX ? '-psx' : ''}.png`,
 
     translateDays: 60190 * timeScale,
     rotateDays: 0.67 * timeScale,
@@ -127,7 +127,7 @@ const data = {
 // #endregion
 
 // #region Sky
-const texture = textureLoader.load('https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/stars.png')
+const texture = textureLoader.load(`https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/stars${PSX ? '-psx' : ''}.png`)
 let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * 1.5, 5, 5)
 let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
 
