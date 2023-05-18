@@ -3,7 +3,7 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js'
 
 const textureLoader = new THREE.TextureLoader()
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.2, 10000000)
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.2, 1e10)
 camera.position.z = 5000
 
 const renderer = new THREE.WebGLRenderer({ pixelRatio: window.devicePixelRatio })
@@ -26,6 +26,7 @@ const planetFragments = PSX ? 6 : 50
 const saturnRingFragments = PSX ? 8 : 30
 const sunLightFragments = PSX ? 5 : 8
 const orbitLineFragments = PSX ? 1000 : 1000
+const skydomeFragments = PSX ? 5 : 5
 
 const data = {
   sun: {
@@ -128,7 +129,7 @@ const data = {
 
 // #region Sky
 const texture = textureLoader.load(`https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/stars${PSX ? '-psx' : ''}.png`)
-let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * 1.5, 5, 5)
+let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * 1.5, skydomeFragments, skydomeFragments)
 let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
 
 const skydome = new THREE.Mesh(geometry, material)
@@ -306,11 +307,21 @@ document.addEventListener('mousedown', e => {
   dragging = true
   document.body.classList.add('grabbing')
 })
+document.addEventListener('touchstart', e => {
+  if (!dragging) {
+    dragging = true
+    mouseLastX = e.touches[0].clientX
+    mouseLastY = e.touches[0].clientY
+  }
+})
 
 // Stop grabbing
 document.addEventListener('mouseup', e => {
   dragging = false
   document.body.classList.remove('grabbing')
+})
+document.addEventListener('touchend', e => {
+  dragging = false
 })
 
 // Grab the camera
@@ -328,6 +339,21 @@ document.addEventListener('mousemove', e => {
 
   mouseLastX = mouseX
   mouseLastY = mouseY
+})
+document.addEventListener('touchmove', e => {
+  e.preventDefault() // Prevent page scrolling
+
+  const x = e.touches[0].clientX
+  const y = e.touches[0].clientY
+
+  camera.rotation.x += (y - mouseLastY) * 0.005
+  camera.rotation.y += (x - mouseLastX) * 0.005
+
+  // Limit X rotation
+  camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
+
+  mouseLastX = x
+  mouseLastY = y
 })
 // #endregion
 
