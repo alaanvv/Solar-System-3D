@@ -22,7 +22,7 @@ variable PSX to false
 - Fix rotation movement to make poles stay being poles
 - Add planets names
 - Make planets cast shadows
-- Make the camera be able to control from a mobile device
+- Create movement buttons for mobile devices
 
 ##
 
