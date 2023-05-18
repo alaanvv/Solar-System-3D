@@ -3,10 +3,10 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js'
 
 const textureLoader = new THREE.TextureLoader()
 const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.2, 10000000)
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.2, 10000000)
 camera.position.z = 5000
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, pixelRatio: window.devicePixelRatio })
+const renderer = new THREE.WebGLRenderer({ pixelRatio: window.devicePixelRatio })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
@@ -16,203 +16,201 @@ let lastTime = performance.now()
 // #endregion
 
 // #region Data
-// Distances in KM
+const radiusScale = 1e-3
+const distanceScale = 1e-4
+const timeScale = 1
+
+const PSX = true
+
+const planetFragments = PSX ? 6 : 50
+const saturnRingFragments = PSX ? 8 : 30
+const sunLightFragments = PSX ? 5 : 8
+const orbitLineFragments = PSX ? 1000 : 1000
+
 const data = {
   sun: {
     name: 'Sun',
-    radius: 695508,
-    distanceFromSun: 0,
+    radius: 695508 * radiusScale,
+    distanceFromSun: 0 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/sun.png',
   },
   mercury: {
     name: 'Mercury',
-    radius: 2440,
-    distanceFromSun: 57e6,
+    radius: 2440 * radiusScale,
+    distanceFromSun: 57e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mercury.png',
 
-    translateDays: 88,
-    rotateDays: 58.6,
+    translateDays: 88 * timeScale,
+    rotateDays: 58.6 * timeScale,
     position: 0
   },
   venus: {
     name: 'Venus',
-    radius: 6052,
-    distanceFromSun: 108e6,
+    radius: 6052 * radiusScale,
+    distanceFromSun: 108e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/venus.png',
 
-    translateDays: 225,
-    rotateDays: 243,
+    translateDays: 225 * timeScale,
+    rotateDays: 243 * timeScale,
     rotateReverse: true,
     translateReverse: true,
     position: 0
   },
   earth: {
     name: 'Earth',
-    radius: 6371,
-    distanceFromSun: 150e6,
+    radius: 6371 * radiusScale,
+    distanceFromSun: 150e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/earth.png',
 
-    translateDays: 365,
-    rotateDays: 1,
+    translateDays: 365 * timeScale,
+    rotateDays: 1 * timeScale,
     position: 0
   },
   mars: {
     name: 'Mars',
-    radius: 3390,
-    distanceFromSun: 228e6,
+    radius: 3390 * radiusScale,
+    distanceFromSun: 228e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/mars.png',
 
-    translateDays: 687,
-    rotateDays: 1.03,
+    translateDays: 687 * timeScale,
+    rotateDays: 1.03 * timeScale,
     position: 0
   },
   jupiter: {
     name: 'Jupiter',
-    radius: 69911,
-    distanceFromSun: 779e6,
+    radius: 69911 * radiusScale,
+    distanceFromSun: 779e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/jupiter.png',
 
-    translateDays: 4333,
-    rotateDays: 0.41,
+    translateDays: 4333 * timeScale,
+    rotateDays: 0.41 * timeScale,
     position: 0
   },
   saturn: {
     name: 'Saturn',
-    radius: 58232,
-    distanceFromSun: 1420e6,
+    radius: 58232 * radiusScale,
+    distanceFromSun: 1420e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn.png',
 
-    translateDays: 10759,
-    rotateDays: 0.44,
+    translateDays: 10759 * timeScale,
+    rotateDays: 0.44 * timeScale,
     position: 0,
 
-    ringMesh: undefined,
-    ringTexture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/saturn-ring.png',
-    ringDistanceFromPlanet: 7000,
-    ringWidth: 25000
+    ringColor: 0x625E5F,
+    ringDistanceFromPlanet: 7000 * radiusScale,
+    ringWidth: 25000 * radiusScale
   },
   uranus: {
     name: 'Uranus',
     color: 0xFF579DC7,
-    radius: 25362,
-    distanceFromSun: 2880e6,
+    radius: 25362 * radiusScale,
+    distanceFromSun: 2880e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/uranus.png',
 
-    translateDays: 30687,
-    rotateDays: 0.72,
+    translateDays: 30687 * timeScale,
+    rotateDays: 0.72 * timeScale,
     translateReverse: true,
     position: 0
   },
   neptune: {
     name: 'Neptune',
     color: 0xFF0179B4,
-    radius: 24622,
-    distanceFromSun: 4500e6,
+    radius: 24622 * radiusScale,
+    distanceFromSun: 4500e6 * distanceScale,
     texture: 'https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/neptune.png',
 
-    translateDays: 60190,
-    rotateDays: 0.67,
+    translateDays: 60190 * timeScale,
+    rotateDays: 0.67 * timeScale,
     position: 0
   }
 }
-
-const radiusScale = 0.001
-const distanceScale = 0.001
-const timeScale = 1
 // #endregion
 
 // #region Sky
 const texture = textureLoader.load('https://raw.githubusercontent.com/alaanvv/Solar-System-3D/main/assets/img/stars.png')
-let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * distanceScale * 1.5, 15, 15)
+let geometry = new THREE.SphereGeometry(data.neptune.distanceFromSun * 1.5, 5, 5)
 let material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide })
 
-const obj = new THREE.Mesh(geometry, material)
-scene.add(obj)
+const skydome = new THREE.Mesh(geometry, material)
+scene.add(skydome)
 // #endregion
 
-// #region Planets
-for (let object of Object.keys(data)) {
-  object = data[object]
+// #region Planets (Sun is a fire-element planet)
+for (let object of Object.values(data)) {
   const texture = textureLoader.load(object.texture)
-  let geometry = new THREE.SphereGeometry(object.radius * radiusScale, 50, 50)
+
+  let geometry = new THREE.SphereGeometry(object.radius, planetFragments, planetFragments)
   let material = object.name === 'Sun'
     ? new THREE.MeshBasicMaterial({ map: texture })
     : new THREE.MeshStandardMaterial({ map: texture })
 
-  const obj = new THREE.Mesh(geometry, material)
-  obj.position.x = object.distanceFromSun * distanceScale
-  scene.add(obj)
-  object.mesh = obj
+  const objectMesh = new THREE.Mesh(geometry, material)
+  scene.add(objectMesh)
+
+  objectMesh.position.x = object.distanceFromSun
+  object.mesh = objectMesh
 
   // Sun light
   if (object.name === 'Sun') {
-    // Add point lights
-    const parts = 8
-    const partSize = 2 * Math.PI / parts
+    const partSize = 2 * Math.PI / sunLightFragments
 
-    // idk why but multiplin by 100 makes it work
-    // X and Y
-    for (let i = 0; i < parts; i++) {
-      let light = new THREE.PointLight(0xffffff, 0.1)
-      obj.add(light)
+    // X and [Y, Z]
+    for (let pos of ['y', 'z']) {
+      for (let angle = 0; angle < sunLightFragments * partSize; angle += partSize) {
+        const light = new THREE.PointLight(0xffffff, 0.1)
+        objectMesh.add(light)
 
-      const angle = partSize * i
-      light.position.x = Math.sin(angle) * object.radius * distanceScale * 100
-      light.position.y = Math.cos(angle) * object.radius * distanceScale * 100
-    }
-    // X and Z
-    for (let i = 0; i < parts; i++) {
-      let light = new THREE.PointLight(0xffffff, 0.1)
-      obj.add(light)
-
-      const angle = partSize * i
-      light.position.x = Math.cos(angle) * object.radius * distanceScale * 100
-      light.position.z = Math.sin(angle) * object.radius * distanceScale * 100
+        const radius = object.radius + data.mercury.distanceFromSun / 4
+        light.position.x = Math.sin(angle) * radius
+        light.position[pos] = Math.cos(angle) * radius
+      }
     }
   }
   // Beatiful rings
   if (object.name === 'Saturn') {
-    const geometry = new THREE.RingGeometry(object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale, object.radius * radiusScale + object.ringDistanceFromPlanet * radiusScale + object.ringWidth * radiusScale, 30)
-    const texture = textureLoader.load(data.saturn.ringTexture)
-    const material = new THREE.MeshBasicMaterial({ map: texture, color: object.ringColor, side: THREE.DoubleSide })
-    const mesh = new THREE.Mesh(geometry, material)
-    scene.add(mesh)
-    mesh.rotation.x = 0.4 * Math.PI
-    mesh.rotation.y = 0.15 * Math.PI
-    object.ringMesh = mesh
+    const innerRadius = object.radius + object.ringDistanceFromPlanet
+
+    let geometry = new THREE.RingGeometry(innerRadius, innerRadius + object.ringWidth, saturnRingFragments)
+    let material = new THREE.MeshBasicMaterial({ color: object.ringColor, side: THREE.DoubleSide })
+    
+    const ringMesh = new THREE.Mesh(geometry, material)
+    scene.add(ringMesh)
+
+    ringMesh.rotation.x = 0.4 * Math.PI
+    ringMesh.rotation.y = 0.15 * Math.PI
+    object.ringMesh = ringMesh
   }
 
   // Orbit line
-  material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true })
+  if (object.name !== 'Sun') {
+    const points = []
+    
+    for (let angle = 0; angle < 2 * Math.PI; angle += 2 * Math.PI / orbitLineFragments) {
+      console.log(angle)
+      let x = Math.cos(angle) * object.distanceFromSun
+      let y = Math.sin(angle) * object.distanceFromSun
 
-  let sections = 1000
-  let points = []
+      points.push(new THREE.Vector3(x, y, 0))
+    }
+    points.push(points[0])
+    
+    let geometry = new THREE.BufferGeometry().setFromPoints(points)
+    let material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true })
 
-  for (let i = 0; i < sections; i++) {
-    let angle = (2 * Math.PI) / sections * i
-    let x = Math.cos(angle) * object.distanceFromSun * distanceScale
-    let y = Math.sin(angle) * object.distanceFromSun * distanceScale
-    points.push(new THREE.Vector3(x, y, 0))
+    const line = new THREE.Line(geometry, material)
+    scene.add(line)
   }
-  points.push(points[0])
-
-  geometry = new THREE.BufferGeometry().setFromPoints(points)
-
-  const line = new THREE.Line(geometry, material)
-  scene.add(line)
 }
 // #endregion
 
 // #region Camera Movement
-// Radians to degrees
-const rtg = ang => Math.floor(ang * 180 / Math.PI) % 360
-
 const pressedKeys = []
-let holding = false
+let dragging = false
 let faster = false
 let fastMod = 50
 let [mouseLastX, mouseLastY] = [0, 0]
 
+// Move forward and backward with scroll
 document.addEventListener('wheel', e => {
   let speed = 15 * (faster ? fastMod : 1)
   if (e.deltaY <= 0) speed *= -1
@@ -221,6 +219,8 @@ document.addEventListener('wheel', e => {
   camera.position.y += Math.sin(camera.rotation.x) * -speed
   camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
 })
+
+// Move in all directions with [A, S, D, W, Q, E]
 function moveBasedOnKeys() {
   for (let key of pressedKeys) {
     if (['a', 'd'].includes(key)) {
@@ -230,7 +230,6 @@ function moveBasedOnKeys() {
       camera.position.x += Math.cos(camera.rotation.y) * speed
       camera.position.z += Math.sin(camera.rotation.y) * -speed
     }
-
     else if (['w', 's'].includes(key)) {
       let speed = 1 * (faster ? fastMod : 1)
       if (key === 'w') speed *= -1
@@ -239,7 +238,6 @@ function moveBasedOnKeys() {
       camera.position.y += Math.sin(camera.rotation.x) * -speed
       camera.position.z += Math.cos(camera.rotation.y) * Math.cos(camera.rotation.x) * speed
     }
-
     else if (['q', 'e'].includes(key)) {
       let speed = 1 * (faster ? fastMod : 1)
       if (key === 'q') speed *= -1
@@ -249,10 +247,13 @@ function moveBasedOnKeys() {
   }
 }
 
+// Rotate camera with arrows and add to pressedKeys
 document.addEventListener('keydown', e => {
-  if (!pressedKeys.includes(e.key.toLowerCase())) pressedKeys.push(e.key.toLowerCase())
+  const key = e.key.toLowerCase()
 
-  switch (e.key.toLowerCase()) {
+  if (!pressedKeys.includes(key)) pressedKeys.push(key)
+
+  switch (key) {
     case "arrowdown":
       camera.rotation.x -= 0.5 * Math.PI
       camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
@@ -269,16 +270,19 @@ document.addEventListener('keydown', e => {
       break
   }
 })
+
+// Remove from pressedKeys
 document.addEventListener('keyup', e => {
-  pressedKeys.splice(pressedKeys.indexOf(e.key.toLowerCase()), 1)
+  const key = e.key.toLowerCase()
+
+  pressedKeys.splice(pressedKeys.indexOf(key), 1)
 })
 
+// Special key functions
 document.addEventListener('keypress', e => {
   const key = e.key.toLowerCase()
 
-  if (key === 'f') {
-    faster = !faster
-  }
+  if (key === 'f') faster = !faster
   else if (key === 'r') {
     camera.rotation.x = 0
     camera.rotation.y = 0
@@ -286,35 +290,39 @@ document.addEventListener('keypress', e => {
 
   if (!isNaN(Number(key))) {
     const index = Number(key)
-    const planetName = Object.keys(data)[index]
-    if (planetName) {
-      const planet = data[planetName]
+    const planet = Object.values(data)[index]
+
+    if (planet) {
       camera.position.x = planet.mesh.position.x
       camera.position.y = planet.mesh.position.y
-      camera.position.z = planet.mesh.position.z + planet.radius * radiusScale * 3
+      camera.position.z = planet.mesh.position.z + planet.radius * 3
       camera.lookAt(planet.mesh.position.x, planet.mesh.position.y, planet.mesh.position.z)
     }
   }
 })
 
+// Start grabbing
 document.addEventListener('mousedown', e => {
-  holding = true
+  dragging = true
   document.body.classList.add('grabbing')
 })
+
+// Stop grabbing
 document.addEventListener('mouseup', e => {
-  holding = false
+  dragging = false
   document.body.classList.remove('grabbing')
 })
 
+// Grab the camera
 document.addEventListener('mousemove', e => {
   let mouseX = e.clientX
   let mouseY = e.clientY
 
-  if (holding) {
+  if (dragging) {
     camera.rotation.x += (mouseY - mouseLastY) * 0.001
     camera.rotation.y += (mouseX - mouseLastX) * 0.001
 
-    // Limit X rotation, prohibited upside down persons fucking around
+    // Limit X rotation
     camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
   }
 
@@ -325,16 +333,15 @@ document.addEventListener('mousemove', e => {
 
 // #region Planet Movement
 function movePlanets() {
-  for (let object of Object.keys(data)) {
-    const planet = data[object]
-    if (!planet.translateDays) continue
-    planet.position += (2 * Math.PI / planet.translateDays / 24 / 60 / 60 / 60) * timeScale * (planet.translateReverse ? -1 : 1)
-    planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun * distanceScale
-    planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun * distanceScale
+  for (let planet of Object.values(data)) {
+    if (planet.name === 'Sun') continue // You're not a planet
 
-    // Fix
-    // planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI * planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
-    // planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays * timeScale / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
+    planet.position += (2 * Math.PI / planet.translateDays / 24 / 60 / 60 / (fps || 1)) * (planet.translateReverse ? -1 : 1)
+    planet.mesh.position.x = Math.cos(planet.position) * planet.distanceFromSun
+    planet.mesh.position.y = Math.sin(planet.position) * planet.distanceFromSun
+
+    planet.mesh.rotation.y -= Math.cos(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
+    planet.mesh.rotation.x += Math.sin(planet.position) * (2 * Math.PI / planet.rotateDays / 24 / 60 / 60 / (fps || 1)) * (planet.rotateReverse ? -1 : 1)
     planet.mesh.rotation.z = planet.position
 
     if (planet.name === 'Saturn') {
@@ -349,29 +356,23 @@ function movePlanets() {
 // #region Render
 function animate() {
   requestAnimationFrame(animate)
+
   movePlanets()
   moveBasedOnKeys()
-  // Uncomment to follow the earth
-  // const planet = data.earth
-  // camera.position.x = planet.mesh.position.x
-  // camera.position.y = planet.mesh.position.y
-  // camera.position.z = planet.mesh.position.z + planet.radius * radiusScale * 3
+
   renderer.render(scene, camera)
-  // FPS
+  
+  // Calculate FPS
   const currentTime = performance.now()
   const elapsedTime = currentTime - lastTime
   frameCount++
-  if (elapsedTime >= 1000) {
-    // Update FPS every second
-    fps = Math.round(frameCount / (elapsedTime / 1000))
+
+  if (elapsedTime >= 100) {
+    fps = frameCount / (elapsedTime / 100)
     frameCount = 0
     lastTime = currentTime
   }
-  // GUI
-  document.querySelector('.coord').innerHTML = `
-  Position: (${Math.floor(camera.position.x)}, ${Math.floor(camera.position.y)}, ${Math.floor(camera.position.z)}) <br>
-  Rotation: (${rtg(camera.rotation.x)}, ${rtg(camera.rotation.y)})
-  `
 }
+
 animate()
 // #endregion
