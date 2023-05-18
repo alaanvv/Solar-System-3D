@@ -4,10 +4,9 @@
 
 [Try this!](https://alaanvv.github.io/Solar-System-3D/)  
   
-I decided to set a "PSX" mode for low quality graphics and  
-I really liked it, if you want good graphics, set the constant  
-variable PSX to false  
-
+It's with a "PSX" style, cuz it's faster and I liked it.  
+If you want good graphics, set the constant variable PSX to false.  
+  
 ### Controls
 
  - `W, A, S, D, Scroll` - Move
