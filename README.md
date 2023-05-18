@@ -17,7 +17,9 @@ variable PSX to false
  ### Todo
  
 - Fix rotation movement to make poles stay being poles
-- Add planet names
+- Add planets names
+- Make planets cast shadows
+- Make the camera be able to control from a mobile device
 
 ##
 
