@@ -13,12 +13,15 @@ document.body.appendChild(renderer.domElement)
 let fps = 0
 let frameCount = 0
 let lastTime = performance.now()
+
+if (window.innerWidth < 700) alert('For a better experience, use a computer. Its hard to pilot this spaceship.')
 // #endregion
 
 // #region Data
-const radiusScale = 1e-3
-const distanceScale = 1e-4
+const radiusScale = 1
+const distanceScale = radiusScale
 const timeScale = 1
+
 
 const PSX = true
 
@@ -26,7 +29,9 @@ const planetFragments = PSX ? 6 : 50
 const saturnRingFragments = PSX ? 8 : 30
 const sunLightFragments = PSX ? 5 : 8
 const orbitLineFragments = PSX ? 1000 : 1000
-const skydomeFragments = PSX ? 5 : 5
+const skydomeFragments = PSX ? 10 : 10
+
+const fastMod = 100
 
 const data = {
   sun: {
@@ -187,7 +192,6 @@ for (let object of Object.values(data)) {
     const points = []
     
     for (let angle = 0; angle < 2 * Math.PI; angle += 2 * Math.PI / orbitLineFragments) {
-      console.log(angle)
       let x = Math.cos(angle) * object.distanceFromSun
       let y = Math.sin(angle) * object.distanceFromSun
 
@@ -196,7 +200,7 @@ for (let object of Object.values(data)) {
     points.push(points[0])
     
     let geometry = new THREE.BufferGeometry().setFromPoints(points)
-    let material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.1, transparent: true })
+    let material = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.05, transparent: true })
 
     const line = new THREE.Line(geometry, material)
     scene.add(line)
@@ -208,7 +212,6 @@ for (let object of Object.values(data)) {
 const pressedKeys = []
 let dragging = false
 let faster = false
-let fastMod = 50
 let [mouseLastX, mouseLastY] = [0, 0]
 
 // Move forward and backward with scroll
@@ -256,19 +259,39 @@ document.addEventListener('keydown', e => {
 
   switch (key) {
     case "arrowdown":
-      camera.rotation.x -= 0.5 * Math.PI
+      camera.rotation.x -= 0.25 * Math.PI
       camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
       break
     case "arrowup":
-      camera.rotation.x += 0.5 * Math.PI
+      camera.rotation.x += 0.25 * Math.PI
       camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
       break
     case "arrowleft":
-      camera.rotation.y += 0.5 * Math.PI
+      camera.rotation.y += 0.25 * Math.PI
       break
     case "arrowright":
-      camera.rotation.y -= 0.5 * Math.PI
+      camera.rotation.y -= 0.25 * Math.PI
       break
+  }
+})
+document.addEventListener('click', e => {
+  const element = e.target
+  const key = element.getAttribute('key')
+  const pressed = element.hasAttribute('pressed')
+
+  if (!key) return
+  
+  if (pressed) {
+    element.removeAttribute('pressed')
+    
+    if (key === 'f') faster = false
+    else pressedKeys.splice(pressedKeys.indexOf(key), 1)
+  }
+  else {
+    element.setAttribute('pressed', '')
+
+    if (key === 'f') faster = true
+    else pressedKeys.push(key)
   }
 })
 
@@ -330,11 +353,12 @@ document.addEventListener('mousemove', e => {
   let mouseY = e.clientY
 
   if (dragging) {
-    camera.rotation.x += (mouseY - mouseLastY) * 0.001
     camera.rotation.y += (mouseX - mouseLastX) * 0.001
+    camera.rotation.x += (mouseY - mouseLastY) * 0.001
 
     // Limit X rotation
     camera.rotation.x = Math.min(Math.max(camera.rotation.x, -0.5 * Math.PI), 0.5 * Math.PI)
+    camera.rotation.z = Math.min(Math.max(camera.rotation.z, -0.5 * Math.PI), 0.5 * Math.PI)
   }
 
   mouseLastX = mouseX
