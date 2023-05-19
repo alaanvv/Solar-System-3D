@@ -1,4 +1,4 @@
-## Your PC isn't good enough to NASA Solar System?  
+## PSX Graphics
 
 ![Earth](https://raw.githubusercontent.com/alaanvv/Image-Database/main/Solar-System-3D/earth.png)
 
@@ -16,4 +16,7 @@ If you want good graphics, set the constant variable PSX to false.
  - `F` - Enable/Disable going faster
  - `ARROWS` - Move camera 90 degrees
 
-Textures from [Solar Textures](https://www.solarsystemscope.com/textures/)
+---
+
+Textures from [Solar Textures](https://www.solarsystemscope.com/textures/)  
+Soundtrack from **Outer Wilds**
