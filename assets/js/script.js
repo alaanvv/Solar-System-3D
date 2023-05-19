@@ -14,6 +14,7 @@ let frameCount = 0
 let lastTime = performance.now()
 
 if (window.innerWidth < 700) alert('For a better experience, use a computer. Its hard to pilot this spaceship.')
+document.querySelector('audio').volume = 0.005
 // #endregion
 
 // #region Data
@@ -308,6 +309,7 @@ document.addEventListener('keypress', e => {
   else if (key === 'r') {
     camera.rotation.x = 0
     camera.rotation.y = 0
+    camera.rotation.z = 0
   }
 
   if (!isNaN(Number(key))) {
