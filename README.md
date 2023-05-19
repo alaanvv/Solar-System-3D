@@ -19,4 +19,4 @@ If you want good graphics, set the constant variable PSX to false.
 ---
 
 Textures from [Solar Textures](https://www.solarsystemscope.com/textures/)  
-Soundtrack from **Outer Wilds**
+Soundtrack from **Outer Wilds** (idk why its not playin)
