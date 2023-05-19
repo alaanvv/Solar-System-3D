@@ -15,14 +15,5 @@ If you want good graphics, set the constant variable PSX to false.
  - `R` - Reset your camera direction
  - `F` - Enable/Disable going faster
  - `ARROWS` - Move camera 90 degrees
- 
- ### Todo
- 
-- Fix rotation movement to make poles stay being poles
-- Add planets names
-- Make planets cast shadows
-- Create movement buttons for mobile devices
-
-##
 
 Textures from [Solar Textures](https://www.solarsystemscope.com/textures/)
