@@ -4,7 +4,6 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js'
 const textureLoader = new THREE.TextureLoader()
 const scene = new THREE.Scene()
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.2, 1e10)
-camera.position.z = 5000
 
 const renderer = new THREE.WebGLRenderer({ pixelRatio: window.devicePixelRatio })
 renderer.setSize(window.innerWidth, window.innerHeight)
@@ -19,9 +18,8 @@ if (window.innerWidth < 700) alert('For a better experience, use a computer. Its
 
 // #region Data
 const radiusScale = 1
-const distanceScale = radiusScale
+const distanceScale = 1
 const timeScale = 1
-
 
 const PSX = true
 
@@ -404,6 +402,8 @@ function movePlanets() {
 // #endregion
 
 // #region Render
+camera.position.z = data.sun.mesh.position.z + data.sun.radius * 3
+
 function animate() {
   requestAnimationFrame(animate)
 
