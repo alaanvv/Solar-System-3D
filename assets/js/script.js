@@ -19,7 +19,7 @@ document.querySelector('audio').volume = 0.005
 
 // #region Data
 const radiusScale = 1
-const distanceScale = 0.00001
+const distanceScale = 1
 const timeScale = 1
 
 const PSX = true
