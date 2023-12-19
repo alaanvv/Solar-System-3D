@@ -1,11 +1,12 @@
-## PSX Graphics
+<div align='center'>
 
-![Earth](https://raw.githubusercontent.com/alaanvv/Image-Database/main/Solar-System-3D/earth.png)
+## Starring: PSX Graphics
 
-[Try this!](https://alaanvv.github.io/Solar-System-3D/)  
+  ![Earth](https://raw.githubusercontent.com/alaanvv/Image-Database/main/Solar-System-3D/earth.png)
   
-It's with a "PSX" style, cuz it's faster and I liked it.  
-If you want good graphics, set the constant variable PSX to false.  
+  It's with a "PSX" style, cuz it's faster and I liked it.  
+  If you want good graphics, set the constant variable PSX to false.  
+</div>
   
 ### Controls
 
